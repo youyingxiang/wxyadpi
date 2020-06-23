@@ -1,3 +1,12 @@
 .vscode/
 .env
 go.sum
+.idea
+dea
+*.iml
+*/.DS_Store
+*.DS_Store
+/tmp
+/test/tmp
+go.sum
+/vendor
