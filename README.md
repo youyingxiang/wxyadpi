@@ -1,32 +1,7 @@
 # wxyapi
 
-wxyapi: Simple Single Golang Web Service
 
-go-crud正式改名为wxyapi!
-
-使用wxyapi开发Web服务: 用最简单的架构，实现够用的框架，服务海量用户
-
-https://github.com/bydmm/wxyapi
-
-## wxyapi文档
-
-https://wxyapi.gourouting.com/
-
-## 视频实况教程
-
-[让我们写个G站吧！Golang全栈编程实况](https://space.bilibili.com/10/channel/detail?cid=78794)
-
-## 使用wxyapi开发的项目实例
-
-https://github.com/bydmm/giligili
-
-## 目的
-
-本项目采用了一系列Golang中比较流行的组件，可以以本项目为基础快速搭建Restful Web API
-
-## 特色
-
-本项目已经整合了许多开发API所必要的组件：
+组件：
 
 1. [Gin](https://github.com/gin-gonic/gin): 轻量级Web框架，自称路由速度是golang最快的 
 2. [GORM](http://gorm.io/docs/index.html): ORM工具。本项目需要配合Mysql使用 
@@ -45,7 +20,7 @@ https://github.com/bydmm/giligili
 4. 实现了```/api/v1/user/me```用户资料接口(需要登录后获取session)
 5. 实现了```/api/v1/user/logout```用户登出接口(需要登录后获取session)
 
-本项目已经预先创建了一系列文件夹划分出下列模块:
+说明
 
 1. api文件夹就是MVC框架的controller，负责协调各部件完成任务
 2. model文件夹负责存储数据库模型和数据库操作相关的代码
