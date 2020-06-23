@@ -27,6 +27,7 @@ func NewRouter() *gin.Engine {
 
 		// 用户登录
 		v1.POST("user/login", api.UserLogin)
+		v1.GET("test", api.StoreOrderSummary)
 
 		// 需要登录保护的
 		auth := v1.Group("")
