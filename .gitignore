@@ -2,6 +2,7 @@
 .env
 go.sum
 .idea
+.idea/
 dea
 *.iml
 */.DS_Store
