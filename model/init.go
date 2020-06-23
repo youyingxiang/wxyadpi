@@ -1,8 +1,8 @@
 package model
 
 import (
-	"singo/util"
 	"time"
+	"wxyapi/util"
 
 	"github.com/jinzhu/gorm"
 

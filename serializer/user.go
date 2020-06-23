@@ -1,6 +1,6 @@
 package serializer
 
-import "singo/model"
+import "wxyapi/model"
 
 // User 用户序列化器
 type User struct {

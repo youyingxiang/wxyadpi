@@ -2,9 +2,9 @@ package conf
 
 import (
 	"os"
-	"singo/cache"
-	"singo/model"
-	"singo/util"
+	"wxyapi/cache"
+	"wxyapi/model"
+	"wxyapi/util"
 
 	"github.com/joho/godotenv"
 )

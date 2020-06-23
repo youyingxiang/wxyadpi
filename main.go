@@ -1,8 +1,8 @@
 package main
 
 import (
-	"singo/conf"
-	"singo/server"
+	"wxyapi/conf"
+	"wxyapi/server"
 )
 
 func main() {

@@ -1,8 +1,8 @@
 package service
 
 import (
-	"singo/model"
-	"singo/serializer"
+	"wxyapi/model"
+	"wxyapi/serializer"
 )
 
 // UserRegisterService 管理用户注册服务

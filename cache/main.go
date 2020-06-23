@@ -2,8 +2,8 @@ package cache
 
 import (
 	"os"
-	"singo/util"
 	"strconv"
+	"wxyapi/util"
 
 	"github.com/go-redis/redis"
 )

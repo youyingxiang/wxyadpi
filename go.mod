@@ -1,6 +1,6 @@
-module singo
+module wxyapi
 
-go 1.12
+go 1.4
 
 require (
 	github.com/gin-contrib/cors v1.3.0

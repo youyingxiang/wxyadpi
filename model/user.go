@@ -26,6 +26,10 @@ const (
 	Suspend string = "suspend"
 )
 
+func (user *User) TableName() string {
+	return "api_user"
+}
+
 // GetUser 用ID获取用户
 func GetUser(ID interface{}) (User, error) {
 	var user User
