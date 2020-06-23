@@ -11,3 +11,4 @@ dea
 /test/tmp
 go.sum
 /vendor
+.air.conf
