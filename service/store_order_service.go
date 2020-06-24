@@ -31,6 +31,9 @@ func (service *StoreOrderService) GetStoreOrder() serializer.Response {
 	}
 }
 
+func (service *StoreOrderService) GetOrderItemByMaterialId() {
+
+}
 func (service *StoreOrderService) GetStoreOrderSummary() ([]*serializer.StoreOrderSummary, error) {
 
 	storeOrderSummarys := []*serializer.StoreOrderSummary{}

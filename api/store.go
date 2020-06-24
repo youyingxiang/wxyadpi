@@ -28,3 +28,6 @@ func StoreOrderSummary(c *gin.Context) {
 	}
 
 }
+func GetOrderItemByMaterialId(c *gin.Context) {
+	c.JSON(200, serializer.Response{Data: "开发中"})
+}

@@ -12,6 +12,7 @@ WORKDIR /build
 # 复制项目中的 go.mod 和 go.sum文件并下载依赖信息
 COPY go.mod .
 COPY go.sum .
+RUN export GOPROXY=http://mirrors.aliyun.com/goproxy/
 RUN  go mod download
 
 # 将代码复制到容器中
