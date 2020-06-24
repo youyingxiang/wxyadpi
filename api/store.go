@@ -7,13 +7,18 @@
  */
 package api
 
-import "github.com/gin-gonic/gin"
-
-type s struct {
-	Data string `json:"data"`
-	Msg  string `json:"msg"`
-}
+import (
+	"github.com/gin-gonic/gin"
+	"wxyapi/serializer"
+	"wxyapi/service"
+)
 
 func StoreOrderSummary(c *gin.Context) {
-	c.JSON(200, s{"sss", "还不错"})
+	orderService := &service.StoreOrderService{}
+	summaries, e := orderService.GetStoreOrderSummary()
+	if e != nil {
+		c.JSON(200, serializer.ParamErr(e.Error(), e))
+	} else {
+		c.JSON(200, serializer.Response{Data: summaries})
+	}
 }
