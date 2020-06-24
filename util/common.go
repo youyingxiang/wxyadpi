@@ -37,19 +37,19 @@ const (
 	StatusFinish
 )
 
-func (this Status) String() string {
-	switch this {
-	case StatusWaitReview:
-		return "待审核"
-	case StatusReview:
-		return "审核"
-	case StatusReReview:
-		return "反审核"
-	case StatusExcute:
-		return "已发货"
-	case StatusFinish:
-		return "已完成"
-	default:
-		return "Unknow"
-	}
-}
+//func (this Status) String() string {
+//	switch this {
+//	case StatusWaitReview:
+//		return "待审核"
+//	case StatusReview:
+//		return "审核"
+//	case StatusReReview:
+//		return "反审核"
+//	case StatusExcute:
+//		return "已发货"
+//	case StatusFinish:
+//		return "已完成"
+//	default:
+//		return "Unknow"
+//	}
+//}

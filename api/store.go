@@ -15,10 +15,16 @@ import (
 
 func StoreOrderSummary(c *gin.Context) {
 	orderService := &service.StoreOrderService{}
-	summaries, e := orderService.GetStoreOrderSummary()
-	if e != nil {
-		c.JSON(200, serializer.ParamErr(e.Error(), e))
+	if err := c.ShouldBind(orderService); err == nil {
+		summaries, e := orderService.GetStoreOrderSummary()
+
+		if e != nil {
+			c.JSON(200, serializer.ParamErr(e.Error(), e))
+		} else {
+			c.JSON(200, serializer.Response{Data: summaries})
+		}
 	} else {
-		c.JSON(200, serializer.Response{Data: summaries})
+		c.JSON(200, ErrorResponse(err))
 	}
+
 }
