@@ -4,7 +4,8 @@ FROM golang:1.14 AS builder
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
     GOOS=linux \
-    GOARCH=amd64
+    GOARCH=amd64 \
+    GOPROXY="https://goproxy.cn,direct"
 
 # 移动到工作目录：/build
 WORKDIR /build
@@ -12,7 +13,6 @@ WORKDIR /build
 # 复制项目中的 go.mod 和 go.sum文件并下载依赖信息
 COPY go.mod .
 COPY go.sum .
-RUN go env -w GOPROXY=https://goproxy.cn,direct
 RUN  go mod download
 
 # 将代码复制到容器中
@@ -29,7 +29,7 @@ RUN cp /build/wxyapi .
 ###################
 # 接下来创建一个小镜像
 ###################
-FROM scratch
+FROM debian:stretch-slim
 
 #COPY ./templates /templates
 #COPY ./static /static
@@ -40,4 +40,7 @@ COPY .env .
 COPY --from=builder /build/wxyapi /
 #RUN docker run -itd --name wxyapi   -p 9000:9000  --link mysql_local:mysql-dev --link redis-test:redis-dev  wxyapi /bin/bash
 # 需要运行的命令
+
 ENTRYPOINT ["/wxyapi"]
+
+CMD ["/bin/bash","./build.sh"]
