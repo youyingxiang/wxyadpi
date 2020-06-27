@@ -43,4 +43,3 @@ COPY --from=builder /build/wxyapi /
 
 ENTRYPOINT ["/wxyapi"]
 
-CMD ["/bin/bash","./build.sh"]
