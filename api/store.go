@@ -29,5 +29,5 @@ func StoreOrderSummary(c *gin.Context) {
 
 }
 func GetOrderItemByMaterialId(c *gin.Context) {
-	c.JSON(200, serializer.Response{Data: "部署测试成功1"})
+	c.JSON(200, serializer.Response{Data: "部署测试成功2"})
 }

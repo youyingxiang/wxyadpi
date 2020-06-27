@@ -28,4 +28,4 @@ else
 fi
 docker build . -t wxyapi
 
-docker run -itd --name wxyapi --link=mysql-dev:mysql-dev   --link redis-dev:redis-dev  -p 9111:9111 wxyapi
+docker run -itd --name wxyapi --link=mysql-dev:mysql-dev   --link redis-test:redis-test  -p 9111:9111 wxyapi
