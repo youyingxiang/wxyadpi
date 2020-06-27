@@ -7,8 +7,6 @@ cd /var/www/html/wxyadpi
 echo "更新代码"
 git pull -v --all
 
-
-
 name=wxyapi
 echo "开始停止 $name 容器"
 docker stop $name
