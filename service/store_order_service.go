@@ -45,6 +45,7 @@ func (service *StoreOrderService) GetOrderItemByMaterialId(material_id int) ([]*
 		Select("store_order_item.id," +
 			"store_order.store_id," +
 			"store_order_item.order_item_no," +
+			"store_order_item.status," +
 			"sum(actual_number) as actual_number," +
 			"sum(should_number) as should_number").
 		Joins("left join store_order on store_order_item.order_item_no = store_order.number and store_order_item.mdept_id = store_order.mdept_id ")

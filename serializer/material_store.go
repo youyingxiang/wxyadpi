@@ -15,4 +15,5 @@ type MaterialStore struct {
 	StoreName    string  `json:"store_name"`
 	StoreId      int     `json:"store_id"`
 	MaterialName string  `json:"material_name"`
+	Status       int     `json:"status"`
 }
