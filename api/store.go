@@ -9,13 +9,14 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"strconv"
 	"wxyapi/serializer"
 	"wxyapi/service"
 )
 
 func StoreOrderSummary(c *gin.Context) {
-	orderService := &service.StoreOrderService{}
-	if err := c.ShouldBind(orderService); err == nil {
+	var orderService service.StoreOrderService
+	if err := c.ShouldBind(&orderService); err == nil {
 		summaries, e := orderService.GetStoreOrderSummary()
 
 		if e != nil {
@@ -29,5 +30,21 @@ func StoreOrderSummary(c *gin.Context) {
 
 }
 func GetOrderItemByMaterialId(c *gin.Context) {
-	c.JSON(200, serializer.Response{Data: "部署测试成功322"})
+	var orderService service.StoreOrderService
+	if err := c.ShouldBind(&orderService); err == nil {
+		material_id := c.Param("material_id")
+		i, err := strconv.Atoi(material_id)
+		if err != nil {
+			c.JSON(200, ErrorResponse(err))
+		}
+		stores, e := orderService.GetOrderItemByMaterialId(i)
+		if e != nil {
+			c.JSON(200, serializer.ParamErr(e.Error(), e))
+		} else {
+			c.JSON(200, serializer.Response{Data: stores})
+		}
+	} else {
+		c.JSON(200, ErrorResponse(err))
+	}
+
 }

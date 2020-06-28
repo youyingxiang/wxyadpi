@@ -31,8 +31,37 @@ func (service *StoreOrderService) GetStoreOrder() serializer.Response {
 	}
 }
 
-func (service *StoreOrderService) GetOrderItemByMaterialId() {
+func (service *StoreOrderService) GetOrderItemByMaterialId(material_id int) ([]*serializer.MaterialStore, error) {
+	material, _ := model.GetMaterial(material_id)
+	stores := []*serializer.MaterialStore{}
+	status := util.StatusReview
+	db := model.DB.Table("store_order_item").
+		Select("store_order.store_id," +
+			"store_order_item.order_item_no," +
+			"sum(actual_number) as actual_number," +
+			"sum(should_number) as should_number").
+		Joins("left join store_order on store_order_item.order_item_no = store_order.number and store_order_item.mdept_id = store_order.mdept_id ")
+	if !service.StartTime.IsZero() && !service.EndTime.IsZero() {
+		db = db.Where("store_order_item.created_at between ? and ?", service.StartTime, service.EndTime)
+	}
 
+	rows, e := db.Where("store_order.status= ? and store_order_item.material_id = ?", status, material_id).Group("store_order.store_id").Rows()
+
+	if e != nil {
+		return nil, e
+	}
+	defer rows.Close()
+	for rows.Next() {
+		store := serializer.MaterialStore{}
+		model.DB.ScanRows(rows, &store)
+		getStore, _ := model.GetStore(store.StoreId)
+		store.StoreName = getStore.Name
+		store.MaterialName = material.Name
+		//storeOrderSummary.Img = util.GetQiniuImg(storeOrderSummary.Img)
+		stores = append(stores, &store)
+
+	}
+	return stores, nil
 }
 func (service *StoreOrderService) GetStoreOrderSummary() ([]*serializer.StoreOrderSummary, error) {
 
