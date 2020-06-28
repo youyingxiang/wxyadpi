@@ -15,4 +15,5 @@ type StoreOrderSummary struct {
 	Img           string `json:"img"`
 	MaterialSpecs string `json:"material_specs"`
 	MaterialBrand string `json:"material_brand"`
+	MaterialId    int    `json:"material_id"`
 }

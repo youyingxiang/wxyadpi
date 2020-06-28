@@ -8,6 +8,7 @@
 package serializer
 
 type MaterialStore struct {
+	Id           int     `json:"id"`
 	OrderItemNo  string  `json:"order_item_no"`
 	ShouldNumber float64 `json:"should_number"`
 	ActualNumber float64 `json:"actual_number"`

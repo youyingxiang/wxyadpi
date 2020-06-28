@@ -36,7 +36,8 @@ func (service *StoreOrderService) GetOrderItemByMaterialId(material_id int) ([]*
 	stores := []*serializer.MaterialStore{}
 	status := util.StatusReview
 	db := model.DB.Table("store_order_item").
-		Select("store_order.store_id," +
+		Select("store_order_item.id," +
+			"store_order.store_id," +
 			"store_order_item.order_item_no," +
 			"sum(actual_number) as actual_number," +
 			"sum(should_number) as should_number").
@@ -45,7 +46,7 @@ func (service *StoreOrderService) GetOrderItemByMaterialId(material_id int) ([]*
 		db = db.Where("store_order_item.created_at between ? and ?", service.StartTime, service.EndTime)
 	}
 
-	rows, e := db.Where("store_order.status= ? and store_order_item.material_id = ?", status, material_id).Group("store_order.store_id").Rows()
+	rows, e := db.Where("store_order.status= ? and store_order_item.material_id = ?", status, material_id).Group("store_id").Rows()
 
 	if e != nil {
 		return nil, e
