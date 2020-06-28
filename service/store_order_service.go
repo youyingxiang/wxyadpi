@@ -19,6 +19,12 @@ type StoreOrderService struct {
 	Start     int       `form:"start"`
 	StartTime time.Time `form:"start_time" time_format:"2006-01-02 15:04:05"`
 	EndTime   time.Time `form:"end_time" time_format:"2006-01-02 15:04:05"`
+	Item      []*Item   `form:"item" json:"item"`
+}
+
+type Item struct {
+	Id           int `form:"id"`
+	ActualNumber int `form:"actual_number" json:"actual_number"`
 }
 
 func (service *StoreOrderService) GetStoreOrder() serializer.Response {
@@ -58,7 +64,10 @@ func (service *StoreOrderService) GetOrderItemByMaterialId(material_id int) ([]*
 		getStore, _ := model.GetStore(store.StoreId)
 		store.StoreName = getStore.Name
 		store.MaterialName = material.Name
-		//storeOrderSummary.Img = util.GetQiniuImg(storeOrderSummary.Img)
+		// 发货数量为0的话 默认等于要货数量
+		if store.ActualNumber == 0 {
+			store.ActualNumber = store.ShouldNumber
+		}
 		stores = append(stores, &store)
 
 	}
@@ -97,4 +106,23 @@ func (service *StoreOrderService) GetStoreOrderSummary() ([]*serializer.StoreOrd
 	}
 	return storeOrderSummarys, nil
 
+}
+
+func (service *StoreOrderService) StoreOrderSendItems() (err error) {
+	tx := model.DB.Begin()
+	for _, v := range service.Item {
+		err := service.storeOrderSendItem(v)
+		if err != nil {
+			tx.Rollback()
+			break
+		}
+	}
+	tx.Commit()
+	return
+}
+
+func (service *StoreOrderService) storeOrderSendItem(item *Item) (err error) {
+	var orderItem model.StoreOrderItem
+	err = model.DB.Model(&orderItem).Where("id = ?", item.Id).Updates(model.StoreOrderItem{ActualNumber: item.ActualNumber, Status: int(util.StatusOk)}).Error
+	return
 }

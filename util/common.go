@@ -37,6 +37,13 @@ const (
 	StatusFinish
 )
 
+type StoreItemStatus int
+
+const (
+	StatusNo StoreItemStatus = iota
+	StatusOk
+)
+
 //func (this Status) String() string {
 //	switch this {
 //	case StatusWaitReview:

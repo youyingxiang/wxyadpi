@@ -11,7 +11,7 @@ import "github.com/jinzhu/gorm"
 
 type StoreOrder struct {
 	gorm.Model
-	Number       string `gorm:"size:32"`
+	Number       string
 	Type         int
 	StoreId      int
 	Status       int

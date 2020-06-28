@@ -48,3 +48,17 @@ func GetOrderItemByMaterialId(c *gin.Context) {
 	}
 
 }
+
+func StoreOrderSendItem(c *gin.Context) {
+	var orderService service.StoreOrderService
+	if err := c.ShouldBind(&orderService); err == nil {
+		e := orderService.StoreOrderSendItems()
+		if err != nil {
+			c.JSON(200, serializer.ParamErr(e.Error(), e))
+		} else {
+			c.JSON(200, serializer.Response{})
+		}
+	} else {
+		c.JSON(200, ErrorResponse(err))
+	}
+}
