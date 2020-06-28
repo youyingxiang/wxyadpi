@@ -46,7 +46,7 @@ func (service *StoreOrderService) GetOrderItemByMaterialId(material_id int) ([]*
 		db = db.Where("store_order_item.created_at between ? and ?", service.StartTime, service.EndTime)
 	}
 
-	rows, e := db.Where("store_order.status= ? and store_order_item.material_id = ?", status, material_id).Group("store_id").Rows()
+	rows, e := db.Where("store_order.status= ? and store_order_item.material_id = ?", status, material_id).Group("order_item_no").Rows()
 
 	if e != nil {
 		return nil, e
