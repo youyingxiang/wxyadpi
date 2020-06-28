@@ -1,1 +1,0 @@
-docker run -itd --name wxyapi   -p 9000:9000  --link mysql_local:mysql-dev --link redis-test:redis-dev  wxyapi /bin/bash
