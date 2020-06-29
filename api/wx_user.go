@@ -17,6 +17,7 @@ import (
 func WxUserLogin(c *gin.Context) {
 	code := c.Query("code")
 	res, err := weapp.Login(os.Getenv("APPID"), os.Getenv("SECRET"), code)
+
 	if err != nil {
 		// 处理一般错误信息
 		c.JSON(200, ErrorResponse(err))
