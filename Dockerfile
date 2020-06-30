@@ -30,7 +30,7 @@ RUN cp /build/wxyapi .
 # 接下来创建一个小镜像
 ###################
 FROM debian:stretch-slim
-RUN apk add --no-cache ca-certificates
+RUN apt-get install ca-certificates
 
 #COPY ./templates /templates
 #COPY ./static /static
