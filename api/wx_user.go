@@ -44,5 +44,4 @@ func GetWxUserInfo(c *gin.Context) {
 	} else {
 		c.JSON(200, serializer.BuildXcxUserResponse(xcxUser))
 	}
-
 }
