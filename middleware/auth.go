@@ -3,6 +3,7 @@ package middleware
 import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"wxyapi/model"
 	"wxyapi/serializer"
 	"wxyapi/util"
@@ -30,7 +31,12 @@ func AuthRequired() func(c *gin.Context) {
 			user := model.XcxUser{}
 			err := model.DB.Where(model.XcxUser{Openid: openid}).First(&user).Error
 			if err != nil {
-				c.JSON(200, serializer.ParamErr(err.Error(), err))
+				if gorm.IsRecordNotFoundError(err) {
+					c.JSON(200, serializer.Response{})
+				} else {
+					c.JSON(200, serializer.ParamErr(err.Error(), err))
+				}
+
 				c.Abort()
 			}
 			c.Set(util.CTX_XCX_USER, &user)
