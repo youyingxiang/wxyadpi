@@ -29,13 +29,13 @@ func NewRouter() *gin.Engine {
 		v1.POST("item/send", api.StoreOrderSendItem)
 		v1.GET("store/order/summary", api.StoreOrderSummary)
 		v1.GET("item/:material_id", api.GetOrderItemByMaterialId)
-		v1.GET("wxuser/login", api.WxUserLogin)
+		v1.POST("wxuser/login", api.WxUserLogin)
 
 		// 需要登录保护的
 		auth := v1.Group("")
 		auth.Use(middleware.AuthRequired())
 		{
-			auth.GET("wxuser/decrypt/user_info", api.WxUserDecryptUserInfo)
+			auth.POST("wxuser/decrypt/user_info", api.WxUserDecryptUserInfo)
 			auth.GET("wxuser/get", api.GetWxUserInfo)
 		}
 	}
