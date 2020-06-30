@@ -26,8 +26,8 @@ func WxUserLogin(c *gin.Context) {
 func WxUserDecryptUserInfo(c *gin.Context) {
 	var wxUserDecryptUserInfo service.WxUserDecryptUserInfoService
 	if err := c.ShouldBind(&wxUserDecryptUserInfo); err == nil {
-		wxUserDecryptUserInfo.DecryptUserInfo()
-		//c.JSON(200, res)
+		res := wxUserDecryptUserInfo.DecryptUserInfo()
+		c.JSON(200, res)
 	} else {
 		c.JSON(200, ErrorResponse(err))
 	}

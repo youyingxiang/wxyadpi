@@ -1,7 +1,6 @@
 package server
 
 import (
-	"os"
 	"wxyapi/api"
 	"wxyapi/middleware"
 
@@ -13,9 +12,9 @@ func NewRouter() *gin.Engine {
 	r := gin.Default()
 
 	// 中间件, 顺序不能改
-	r.Use(middleware.Session(os.Getenv("SESSION_SECRET")))
+	//r.Use(middleware.Session(os.Getenv("SESSION_SECRET")))
 	r.Use(middleware.Cors())
-	r.Use(middleware.CurrentUser())
+	//r.Use(middleware.CurrentUser())
 
 	// 路由
 	v1 := r.Group("/api/v1")
@@ -31,15 +30,12 @@ func NewRouter() *gin.Engine {
 		v1.GET("store/order/summary", api.StoreOrderSummary)
 		v1.GET("item/:material_id", api.GetOrderItemByMaterialId)
 		v1.GET("wxuser/login", api.WxUserLogin)
-		v1.GET("wxuser/decrypt/user_info", api.WxUserDecryptUserInfo)
 
 		// 需要登录保护的
 		auth := v1.Group("")
 		auth.Use(middleware.AuthRequired())
 		{
-			// User Routing
-			auth.GET("user/me", api.UserMe)
-			auth.DELETE("user/logout", api.UserLogout)
+			auth.GET("wxuser/decrypt/user_info", api.WxUserDecryptUserInfo)
 		}
 	}
 	return r

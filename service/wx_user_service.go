@@ -8,6 +8,7 @@
 package service
 
 import (
+	"github.com/jinzhu/gorm"
 	"github.com/medivhzhan/weapp/v2"
 	"os"
 	"wxyapi/model"
@@ -37,8 +38,19 @@ func (service *WxUserLoginService) Login() serializer.Response {
 }
 
 func (service *WxUserLoginService) login(response *weapp.LoginResponse) (err error) {
-	user := model.XcxUser{Openid: response.OpenID, SessionKey: response.SessionKey}
-	err = model.DB.Where(model.XcxUser{Openid: response.OpenID}).FirstOrCreate(&user).Error
+	user := model.XcxUser{}
+	err = model.DB.Where(model.XcxUser{Openid: response.OpenID}).First(&user).Error
+	if err != nil {
+		// 未找到数据
+		if gorm.IsRecordNotFoundError(err) {
+			user.Openid = response.OpenID
+			user.SessionKey = response.SessionKey
+			model.DB.Create(user)
+		}
+		return
+	}
+	user.SessionKey = response.SessionKey
+	model.DB.Save(user)
 	return
 }
 
