@@ -2,10 +2,12 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"wxyapi/conf"
 	"wxyapi/model"
 	"wxyapi/serializer"
+	"wxyapi/util"
 
 	"github.com/gin-gonic/gin"
 	validator "gopkg.in/go-playground/validator.v8"
@@ -46,4 +48,17 @@ func ErrorResponse(err error) serializer.Response {
 	}
 
 	return serializer.ParamErr("参数错误", err)
+}
+
+func GetCurrentUser(c *gin.Context) (*model.XcxUser, error) {
+	user, exists := c.Get(util.CTX_XCX_USER)
+	if !exists {
+		return nil, errors.New("登陆用户不存在")
+	}
+	if xcxUser, ok := user.(*model.XcxUser); ok {
+		return xcxUser, nil
+	} else {
+		return nil, errors.New("类型断言失败!")
+	}
+
 }

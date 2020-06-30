@@ -9,6 +9,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"wxyapi/serializer"
 	"wxyapi/service"
 )
 
@@ -26,9 +27,22 @@ func WxUserLogin(c *gin.Context) {
 func WxUserDecryptUserInfo(c *gin.Context) {
 	var wxUserDecryptUserInfo service.WxUserDecryptUserInfoService
 	if err := c.ShouldBind(&wxUserDecryptUserInfo); err == nil {
-		res := wxUserDecryptUserInfo.DecryptUserInfo()
-		c.JSON(200, res)
+		if xcxUser, e := GetCurrentUser(c); e != nil {
+			res := wxUserDecryptUserInfo.DecryptUserInfo(xcxUser)
+			c.JSON(200, res)
+		} else {
+			c.JSON(200, ErrorResponse(e))
+		}
 	} else {
 		c.JSON(200, ErrorResponse(err))
 	}
+}
+
+func GetWxUserInfo(c *gin.Context) {
+	if xcxUser, e := GetCurrentUser(c); e != nil {
+		c.JSON(200, ErrorResponse(e))
+	} else {
+		c.JSON(200, serializer.BuildXcxUserResponse(xcxUser))
+	}
+
 }

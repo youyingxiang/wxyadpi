@@ -37,6 +37,10 @@ const (
 	StatusFinish
 )
 
+const (
+	CTX_XCX_USER = "xcx_user"
+)
+
 type StoreItemStatus int
 
 const (

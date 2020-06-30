@@ -59,18 +59,15 @@ type WxUserDecryptUserInfoService struct {
 	RawData       string `form:"raw_data" binding:"required"`
 	Signature     string `form:"signature" binding:"required"`
 	Iv            string `form:"iv" binding:"required"`
-	OpenId        string `form:"openid" binding:"required"`
+	//OpenId        string `form:"openid" binding:"required"`
 }
 
-func (service *WxUserDecryptUserInfoService) DecryptUserInfo() serializer.Response {
-	user := model.XcxUser{}
-	if e := model.DB.Where(model.XcxUser{Openid: service.OpenId}).First(&user).Error; e != nil {
-		return serializer.ParamErr(e.Error(), e)
-	}
-	if e := service.decryptUserInfo(&user); e != nil {
+func (service *WxUserDecryptUserInfoService) DecryptUserInfo(user *model.XcxUser) serializer.Response {
+	if e := service.decryptUserInfo(user); e != nil {
 		return serializer.ParamErr(e.Error(), e)
 	}
 	return serializer.Response{Data: user}
+
 }
 
 func (service *WxUserDecryptUserInfoService) decryptUserInfo(user *model.XcxUser) error {
