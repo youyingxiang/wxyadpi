@@ -46,6 +46,7 @@ func (service *WxUserLoginService) login(response *weapp.LoginResponse) (err err
 			user.Openid = response.OpenID
 			user.SessionKey = response.SessionKey
 			model.DB.Create(user)
+			return nil
 		}
 		return
 	}
