@@ -9,23 +9,26 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/medivhzhan/weapp/v2"
-	"os"
-	"wxyapi/serializer"
+	"wxyapi/service"
 )
 
 func WxUserLogin(c *gin.Context) {
-	code := c.Query("code")
-	res, err := weapp.Login(os.Getenv("APPID"), os.Getenv("SECRET"), code)
-
-	if err != nil {
-		// 处理一般错误信息
+	var wxUserLoginService service.WxUserLoginService
+	if err := c.ShouldBind(&wxUserLoginService); err == nil {
+		res := wxUserLoginService.Login()
+		c.JSON(200, res)
+	} else {
 		c.JSON(200, ErrorResponse(err))
 	}
 
-	if err := res.GetResponseError(); err != nil {
-		// 处理微信返回错误信息
+}
+
+func WxUserDecryptUserInfo(c *gin.Context) {
+	var wxUserDecryptUserInfo service.WxUserDecryptUserInfoService
+	if err := c.ShouldBind(&wxUserDecryptUserInfo); err == nil {
+		wxUserDecryptUserInfo.DecryptUserInfo()
+		//c.JSON(200, res)
+	} else {
 		c.JSON(200, ErrorResponse(err))
 	}
-	c.JSON(200, serializer.Response{Data: res})
 }

@@ -31,6 +31,7 @@ func NewRouter() *gin.Engine {
 		v1.GET("store/order/summary", api.StoreOrderSummary)
 		v1.GET("item/:material_id", api.GetOrderItemByMaterialId)
 		v1.GET("wxuser/login", api.WxUserLogin)
+		v1.GET("wxuser/decrypt/user_info", api.WxUserDecryptUserInfo)
 
 		// 需要登录保护的
 		auth := v1.Group("")
