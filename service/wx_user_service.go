@@ -45,14 +45,13 @@ func (service *WxUserLoginService) login(response *weapp.LoginResponse) (err err
 		if gorm.IsRecordNotFoundError(err) {
 			user.Openid = response.OpenID
 			user.SessionKey = response.SessionKey
-			model.DB.Create(user)
-
+			model.DB.Create(&user)
 			return nil
 		}
 		return
 	}
 	user.SessionKey = response.SessionKey
-	model.DB.Save(user)
+	model.DB.Save(&user)
 	return
 }
 
