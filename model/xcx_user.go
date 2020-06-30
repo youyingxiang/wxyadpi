@@ -11,15 +11,15 @@ import "github.com/jinzhu/gorm"
 
 type XcxUser struct {
 	gorm.Model
-	Nickname   string `json:"nickname"`
-	Sex        int    `json:"sex"`
-	Avatar     string `json:"avatar"`
-	Openid     string `json:"openid"`
-	SessionKey string `json:"session_key"`
-	Unionid    string `json:"unionid"`
-	Province   string `json:"province"`
-	City       string `json:"city"`
-	Phone      string `json:"phone"`
+	Nickname string `json:"nickname"`
+	Sex      int    `json:"sex"`
+	Avatar   string `json:"avatar"`
+	Openid   string `json:"openid"`
+	//	SessionKey string `json:"session_key"`
+	Unionid  string `json:"unionid"`
+	Province string `json:"province"`
+	City     string `json:"city"`
+	Phone    string `json:"phone"`
 }
 
 func GetXcxUser(ID interface{}) (xcx_user XcxUser, err error) {

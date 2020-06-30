@@ -16,72 +16,75 @@ import (
 )
 
 type WxUserLoginService struct {
-	Code string `json:"code" form:"code" binding:"required"`
-}
-
-func (service *WxUserLoginService) Login() serializer.Response {
-	response, err := weapp.Login(os.Getenv("APPID"), os.Getenv("SECRET"), service.Code)
-
-	if err != nil {
-		// 处理一般错误信息
-		return serializer.ParamErr(err.Error(), err)
-	}
-	if err := response.GetResponseError(); err != nil {
-		// 处理微信返回错误信息
-		return serializer.ParamErr(err.Error(), err)
-	}
-	if err := service.login(response); err != nil {
-		return serializer.ParamErr(err.Error(), err)
-	}
-
-	return serializer.Response{Data: response}
-}
-
-func (service *WxUserLoginService) login(response *weapp.LoginResponse) (err error) {
-	user := model.XcxUser{}
-	err = model.DB.Where(model.XcxUser{Openid: response.OpenID}).First(&user).Error
-	if err != nil {
-		// 未找到数据
-		if gorm.IsRecordNotFoundError(err) {
-			user.Openid = response.OpenID
-			user.SessionKey = response.SessionKey
-			model.DB.Create(&user)
-			return nil
-		}
-		return
-	}
-	user.SessionKey = response.SessionKey
-	model.DB.Save(&user)
-	return
-}
-
-type WxUserDecryptUserInfoService struct {
+	Code          string `json:"code" form:"code" binding:"required"`
 	EncryptedData string `form:"encrypted_data" binding:"required"`
 	RawData       string `form:"raw_data" binding:"required"`
 	Signature     string `form:"signature" binding:"required"`
 	Iv            string `form:"iv" binding:"required"`
-	//OpenId        string `form:"openid" binding:"required"`
 }
 
-func (service *WxUserDecryptUserInfoService) DecryptUserInfo(user *model.XcxUser) serializer.Response {
-	if e := service.decryptUserInfo(user); e != nil {
-		return serializer.ParamErr(e.Error(), e)
-	}
-	return serializer.Response{Data: user}
+func (service *WxUserLoginService) Login() serializer.Response {
+	// 调用微信登陆
+	loginResponse, err := service.login()
 
-}
-
-func (service *WxUserDecryptUserInfoService) decryptUserInfo(user *model.XcxUser) error {
-	info, err := weapp.DecryptUserInfo(user.SessionKey, service.RawData, service.EncryptedData, service.Signature, service.Iv)
 	if err != nil {
-		return err
+		return serializer.ParamErr(err.Error(), err)
 	}
+	// openid保存数据库
+	user, err := service.saveOpenid(loginResponse)
+
+	if err != nil {
+		return serializer.ParamErr(err.Error(), err)
+	}
+	// 解密
+	return serializer.Response{Data: user}
+}
+
+func (service *WxUserLoginService) login() (response *weapp.LoginResponse, err error) {
+	response, err = weapp.Login(os.Getenv("APPID"), os.Getenv("SECRET"), service.Code)
+	if err != nil {
+		return
+	}
+	if err = response.GetResponseError(); err != nil {
+		return nil, err
+	}
+	return
+}
+
+func (service *WxUserLoginService) saveOpenid(response *weapp.LoginResponse) (*model.XcxUser, error) {
+	user := &model.XcxUser{}
+	// 解密加密的用户信息
+	if info, err := service.decryptUserInfo(response); err != nil {
+		return nil, err
+	} else {
+		if err := model.DB.Where(model.XcxUser{Openid: response.OpenID}).First(user).Error; err != nil {
+			// 未找到数据
+			if gorm.IsRecordNotFoundError(err) {
+				saveUser := service.buildSaveUser(response, info, user)
+				model.DB.Create(saveUser)
+				return saveUser, nil
+			}
+			return nil, err
+		}
+		saveUser := service.buildSaveUser(response, info, user)
+		model.DB.Save(saveUser)
+		return saveUser, nil
+	}
+}
+
+func (service *WxUserLoginService) buildSaveUser(response *weapp.LoginResponse, info *weapp.UserInfo, user *model.XcxUser) *model.XcxUser {
+	user.Openid = response.OpenID
+	//user.SessionKey = response.SessionKey
 	user.Avatar = info.Avatar
 	user.Nickname = info.Nickname
 	user.City = info.City
 	user.Province = info.Province
 	user.Sex = info.Gender
 	user.Unionid = info.UnionID
-	model.DB.Save(user)
-	return nil
+	return user
+}
+
+func (service *WxUserLoginService) decryptUserInfo(response *weapp.LoginResponse) (info *weapp.UserInfo, err error) {
+	info, err = weapp.DecryptUserInfo(response.SessionKey, service.RawData, service.EncryptedData, service.Signature, service.Iv)
+	return
 }

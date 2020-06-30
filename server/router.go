@@ -35,7 +35,6 @@ func NewRouter() *gin.Engine {
 		auth := v1.Group("")
 		auth.Use(middleware.AuthRequired())
 		{
-			auth.POST("wxuser/decrypt/user_info", api.WxUserDecryptUserInfo)
 			auth.GET("wxuser/get", api.GetWxUserInfo)
 		}
 	}
