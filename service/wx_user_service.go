@@ -18,9 +18,9 @@ import (
 type WxUserLoginService struct {
 	Code          string `json:"code" form:"code" binding:"required"`
 	EncryptedData string `form:"encrypted_data" binding:"required"`
-	RawData       string `form:"raw_data" binding:"required"`
-	Signature     string `form:"signature" binding:"required"`
-	Iv            string `form:"iv" binding:"required"`
+	//RawData       string `form:"raw_data" binding:"required"`
+	//Signature     string `form:"signature" binding:"required"`
+	Iv string `form:"iv" binding:"required"`
 }
 
 func (service *WxUserLoginService) Login() serializer.Response {
@@ -72,7 +72,7 @@ func (service *WxUserLoginService) saveOpenid(response *weapp.LoginResponse) (*m
 	}
 }
 
-func (service *WxUserLoginService) buildSaveUser(response *weapp.LoginResponse, info *weapp.UserInfo, user *model.XcxUser) *model.XcxUser {
+func (service *WxUserLoginService) buildSaveUser(response *weapp.LoginResponse, info *WxUserInfo, user *model.XcxUser) *model.XcxUser {
 	user.Openid = response.OpenID
 	//user.SessionKey = response.SessionKey
 	user.Avatar = info.Avatar
@@ -84,7 +84,9 @@ func (service *WxUserLoginService) buildSaveUser(response *weapp.LoginResponse, 
 	return user
 }
 
-func (service *WxUserLoginService) decryptUserInfo(response *weapp.LoginResponse) (info *weapp.UserInfo, err error) {
-	info, err = weapp.DecryptUserInfo(response.SessionKey, service.RawData, service.EncryptedData, service.Signature, service.Iv)
+func (service *WxUserLoginService) decryptUserInfo(response *weapp.LoginResponse) (info *WxUserInfo, err error) {
+	crypt := NewWXUserDataCrypt(os.Getenv("APPID"), response.SessionKey)
+	info, err = crypt.Decrypt(service.EncryptedData, service.Iv)
+	//info, err = weapp.DecryptUserInfo(response.SessionKey, "", service.EncryptedData, service.Signature, service.Iv)
 	return
 }
