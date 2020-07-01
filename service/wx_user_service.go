@@ -90,3 +90,32 @@ func (service *WxUserLoginService) decryptUserInfo(response *weapp.LoginResponse
 	//info, err = weapp.DecryptUserInfo(response.SessionKey, "", service.EncryptedData, service.Signature, service.Iv)
 	return
 }
+
+type WxUserDecryptUserInfoService struct {
+	EncryptedData string `form:"encrypted_data" binding:"required"`
+	Iv            string `form:"iv" binding:"required"`
+}
+
+func (service *WxUserDecryptUserInfoService) DecryptUserInfo(user *model.XcxUser) serializer.Response {
+	if e := service.decryptUserInfo(user); e != nil {
+		return serializer.ParamErr(e.Error(), e)
+	}
+	return serializer.Response{Data: user}
+}
+
+func (service *WxUserDecryptUserInfoService) decryptUserInfo(user *model.XcxUser) error {
+	//info, err := weapp.DecryptUserInfo(user.SessionKey, service.RawData, service.EncryptedData, service.Signature, service.Iv)
+	crypt := NewWXUserDataCrypt(os.Getenv("APPID"), user.SessionKey)
+	info, err := crypt.Decrypt(service.EncryptedData, service.Iv)
+	if err != nil {
+		return err
+	}
+	user.Avatar = info.Avatar
+	user.Nickname = info.Nickname
+	user.City = info.City
+	user.Province = info.Province
+	user.Sex = info.Gender
+	user.Unionid = info.UnionID
+	model.DB.Save(user)
+	return nil
+}
